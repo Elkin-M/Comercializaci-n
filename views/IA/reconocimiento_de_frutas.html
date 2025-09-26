@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Análisis de Frutas y Verduras del Caribe</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      line-height: 1.6;
+      margin: 0;
+      padding: 0;
+      background-color: #f0f0f0;
+    }
+    .contenedor {
+      max-width: 800px;
+      padding: 30px;
+      margin: 0 auto;
+      background-color: #ffffff;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+      border-radius: 8px;
+    }
+    h1 {
+      font-size: 2rem;
+      margin-bottom: 30px;
+      text-align: center;
+      color: #2c3e50;
+    }
+    #imagenProducto {
+      display: block;
+      margin: 20px auto;
+      max-width: 100%;
+      max-height: 300px;
+      border-radius: 8px;
+      box-shadow: 0 0 5px rgba(0,0,0,0.2);
+    }
+    #botonAnalizar {
+      display: block;
+      margin: 30px auto 0 auto;
+      padding: 10px 20px;
+      border: none;
+      border-radius: 5px;
+      background-color: #3498db;
+      color: #fff;
+      cursor: pointer;
+      font-size: 1rem;
+      transition: background-color 0.3s ease;
+    }
+    #botonAnalizar:hover {
+      background-color: #2980b9;
+    }
+    #resultadoAnalisis {
+      margin-top: 30px;
+      font-family: Arial, sans-serif;
+      background-color: #f9f9f9;
+      border-radius: 8px;
+      padding: 20px;
+      box-shadow: 0 0 5px rgba(0,0,0,0.1);
+    }
+    .seccion {
+      margin-bottom: 20px;
+      padding-bottom: 20px;
+      border-bottom: 1px solid #e0e0e0;
+    }
+    .seccion:last-child {
+      border-bottom: none;
+    }
+    .seccion h2 {
+      color: #2c3e50;
+      font-size: 1.4rem;
+      margin-bottom: 10px;
+    }
+    .seccion p {
+      margin: 5px 0;
+    }
+    .loading {
+      color: #666;
+      font-size: 1.2rem;
+      text-align: center;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="contenedor">
+    <h1>Análisis de Frutas y Verduras del Caribe</h1>
+    <input type="file" id="inputImagen" accept="image/*">
+    <img id="imagenProducto" src="/api/placeholder/400/300" alt="Imagen de fruta o verdura">
+    <button type="button" id="botonAnalizar">Analizar Producto</button>
+    <div id="resultadoAnalisis"></div>
+  </div>
+
+  <script type="importmap">
+    {
+      "imports": {
+        "@google/generative-ai": "https://esm.run/@google/generative-ai"
+      }
+    }
+  </script>
+
+  <script type="module">
+    import { GoogleGenerativeAI } from "@google/generative-ai"
+    const clave = "AIzaSyAzSRphbn7QyM-9wIcxLTwHlgjlPaPg5oc"
+
+    const genAI = new GoogleGenerativeAI(clave)
+    const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" })
+
+    const inputImagen = document.querySelector("#inputImagen")
+    const imagenProducto = document.querySelector("#imagenProducto")
+    const botonAnalizar = document.querySelector("#botonAnalizar")
+    const resultadoAnalisis = document.querySelector("#resultadoAnalisis")
+
+    inputImagen.addEventListener("change", (event) => {
+      const file = event.target.files[0]
+      if (file) {
+        const reader = new FileReader()
+        reader.onload = (e) => {
+          imagenProducto.src = e.target.result
+        }
+        reader.readAsDataURL(file)
+      }
+    })
+
+    botonAnalizar.addEventListener("click", async () => {
+      if (imagenProducto.src === "/api/placeholder/400/300") {
+        resultadoAnalisis.innerHTML = "<p class='loading'>Por favor, selecciona una imagen de fruta o verdura primero.</p>"
+        return
+      }
+
+      desactivarBoton()
+      resultadoAnalisis.innerHTML = "<p class='loading'>Analizando la imagen...</p>"
+
+      try {
+        const imageData = await getImageData(imagenProducto)
+        const result = await model.generateContent([
+          "Analiza la imagen y proporciona la siguiente información:\n" +
+          "1. Identifica si es una fruta o verdura típica de la región Caribe.\n" +
+          "2. Nombre común y científico del producto.\n" +
+          "3. Descripción detallada de su apariencia, incluyendo color, forma y textura.\n" +
+          "4. Propiedades nutricionales y beneficios para la salud.\n" +
+          "5. Usos culinarios comunes en la gastronomía del Caribe.\n" +
+          "6. Información comercial específica para la región Bolívar, Colombia:\n" +
+          "   a) Principales zonas de cultivo en Bolívar.\n" +
+          "   b) Temporada de cosecha.\n" +
+          "   c) Volumen aproximado de producción anual.\n" +
+          "   d) Mercados principales (local, nacional, exportación).\n" +
+          "   e) Precio promedio por kilogramo en el mercado local.\n" +
+          "7. Cualquier dato cultural o histórico interesante relacionado con este producto en la región Caribe.\n" +
+          "Presenta la información de manera estructurada, utilizando los siguientes encabezados HTML:\n" +
+          "<div class='seccion'><h2>Título de la sección</h2><p>Contenido de la sección</p></div>\n" +
+          "Asegúrate de que cada sección principal tenga su propio div con la clase 'seccion'.",
+          imageData
+        ])
+        const response = await result.response
+        const text = response.text()
+        resultadoAnalisis.innerHTML = text
+      } catch (error) {
+        resultadoAnalisis.innerHTML = '<p class="loading">Hubo un problema al analizar la imagen: ' + error.message + '</p>'
+      }
+
+      activarBoton()
+    })
+
+    async function getImageData(img) {
+      return new Promise((resolve) => {
+        const canvas = document.createElement('canvas')
+        canvas.width = img.width
+        canvas.height = img.height
+        const ctx = canvas.getContext('2d')
+        ctx.drawImage(img, 0, 0)
+        canvas.toBlob((blob) => {
+          const reader = new FileReader()
+          reader.onloadend = () => resolve({
+            inlineData: {
+              data: reader.result.split(',')[1],
+              mimeType: 'image/jpeg'
+            }
+          })
+          reader.readAsDataURL(blob)
+        }, 'image/jpeg')
+      })
+    }
+
+    function desactivarBoton() {
+      botonAnalizar.disabled = true
+      botonAnalizar.innerText = "Analizando..."
+    }
+
+    function activarBoton() {
+      botonAnalizar.disabled = false
+      botonAnalizar.innerText = "Analizar Producto"
+    }
+  </script>
+</body>
+
+</html>

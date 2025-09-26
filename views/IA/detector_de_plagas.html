@@ -1,0 +1,434 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<meta charset="UTF-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta name="description" content="Responsive Bootstrap4 Shop Template, Created by Imran Hossain from https://imransdesign.com/">
+
+	<!-- title -->
+	<title>FrutiK - Comercio del Caribe</title>
+
+	<!-- favicon -->
+	<link rel="shortcut icon" type="image/png" href="assets/img/favicon.png">
+	<!-- google font -->
+	<link href="https://fonts.googleapis.com/css?family=Open+Sans:300,400,700" rel="stylesheet">
+	<link href="https://fonts.googleapis.com/css?family=Poppins:400,700&display=swap" rel="stylesheet">
+	<!-- fontawesome -->
+	<link rel="stylesheet" href="../../assets/bootstrap/css/all.min.css?2">
+	<!-- bootstrap -->
+	<link rel="stylesheet" href="../../assets/bootstrap/css/bootstrap.min.css?2">
+	<!-- owl carousel -->
+	<link rel="stylesheet" href="../../assets/css/owl.carousel.css?2">
+	<!-- magnific popup -->
+	<link rel="stylesheet" href="../../assets/css/magnific-popup.css?2">
+	<!-- animate css -->
+	<link rel="stylesheet" href="../../assets/css/animate.css?2">
+	<!-- mean menu css -->
+	<link rel="stylesheet" href="../../assets/css/meanmenu.min.css?2">
+	<!-- main style -->
+	<link rel="stylesheet" href="../../assets/css/main.css?2">
+	<!-- responsive -->
+	<link rel="stylesheet" href="../../assets/css/responsive.css?2">
+
+</head>
+
+<body>
+
+	<!--PreLoader-->
+	<div class="loader">
+		<div class="loader-inner">
+			<div class="circle"></div>
+		</div>
+	</div>
+	<!--PreLoader Ends-->
+
+	<!-- header -->
+	<div class="top-header-area" id="sticker">
+		<div class="container">
+			<div class="row">
+				<div class="col-lg-12 col-sm-12 text-center">
+					<div class="main-menu-wrap">
+						<!-- logo -->
+						<div class="site-logo">
+							<a href="../../index.php">
+								<img src="../../assets/img/company-logos/6.png" alt="">
+							</a>
+						</div>
+						<!-- logo -->
+
+						<!-- menu start -->
+						<nav class="main-menu">
+							<ul>
+								<li class="current-list-item"><a href="../../index.php">INICIO</a></li>
+								<li><a href="../../views/nosotros.html">NOSOTROS</a></li>
+								<li><a href="../../views/tienda.php">TIENDA</a></li>
+								<li><a href="../../views/campesinos.php">CAMPESINOS</a></li>
+
+								<li><a href="#">INTELIGENCIA ARTIFICIAL</a>
+									<ul class="sub-menu">
+										<li><a href="reconocimiento_de_frutas.html">Reconocimiento de frutas</a></li>
+										<li><a href="chatbot.html">Chatbot Experto en Mercado Hortofrutícola</a></li>
+										<li><a href="detector_de_plagas.html">Detector de plagas </a></li>
+									</ul>
+								</li>
+
+								<li>
+									<div class="header-icons">
+										<a class="mobile-hide user-bar-icon" href="../../views/login_vendedor.php"><i class="fas fa-user"></i> INICIAR SESIÓN</a>
+									</div>
+								</li>
+							</ul>
+						</nav>
+						<a class="mobile-show user-bar-icon" href=""><i class="fas fa-user"></i></a>
+						<div class="mobile-menu"></div>
+						<!-- menu end -->
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	<!-- end header -->
+
+	<!-- breadcrumb-section -->
+	<div class="breadcrumb-section breadcrumb-bg">
+		<div class="container">
+			<div class="row">
+				<div class="col-lg-8 offset-lg-2 text-center">
+					<div class="breadcrumb-text">
+						<p>Frescos y Orgánicos del Caribe</p>
+						<h1>Detección de Plagas en Frutas y Plantas</h1>
+					</div>
+				</div>
+			</div>
+		</div>
+
+	</div>
+	<!-- end breadcrumb section -->
+    <style>
+        /* Contenedor General */
+        .contenedor {
+          font-family: Arial, sans-serif;
+          line-height: 1.6;
+          margin: 0 auto;
+          padding: 20px;
+          background-color: #ffffff;
+          max-width: 800px;
+          box-shadow: 0 0 10px rgba(0,0,0,0.1);
+          border-radius: 8px;
+          text-align: center;
+        }
+      
+        h1 {
+          font-size: 2rem;
+          margin-bottom: 30px;
+          color: #30bd43;
+          text-align: center;
+        }
+      
+        /* Input de Imagen Personalizado */
+        input[type="file"] {
+          display: none;
+        }
+      
+        input[type="file"] + label {
+          display: inline-block;
+          padding: 10px 20px;
+          color: #fff;
+          background-color: #30bd43;
+          border-radius: 5px;
+          cursor: pointer;
+          font-size: 1rem;
+          margin-bottom: 20px;
+          transition: background-color 0.3s ease;
+        }
+      
+        input[type="file"] + label:hover {
+          background-color: #28a745;
+        }
+      
+        /* Imagen de Vista Previa */
+        #imagenPlanta {
+          display: block;
+          margin: 20px auto;
+          max-width: 100%;
+          max-height: 300px;
+          border-radius: 8px;
+          box-shadow: 0 0 5px rgba(0,0,0,0.2);
+          border: 1px solid #ddd;
+        }
+      
+        /* Botón Analizar */
+        #botonAnalizar {
+          display: inline-block;
+          padding: 10px 20px;
+          font-size: 1rem;
+          color: #fff;
+          background-color: #007bff;
+          border: none;
+          border-radius: 5px;
+          cursor: pointer;
+          transition: background-color 0.3s ease;
+          margin-top: 10px;
+        }
+      
+        #botonAnalizar:hover {
+          background-color: #0056b3;
+        }
+      
+        #botonAnalizar:disabled {
+          background-color: #6c757d;
+          cursor: not-allowed;
+        }
+      
+        /* Contenedor de Resultados */
+        #resultadoAnalisis {
+          margin-top: 20px;
+          font-family: Arial, sans-serif;
+          background-color: #f9f9f9;
+          border-radius: 8px;
+          padding: 20px;
+          box-shadow: 0 0 5px rgba(0,0,0,0.1);
+          text-align: left;
+        }
+        #resultadoAnalisis h2{
+         font-size: 2rem;
+        }
+      
+        /* Secciones de Resultados */
+        .seccion {
+          margin-bottom: 20px;
+          padding-bottom: 20px;
+          border-bottom: 1px solid #e0e0e0;
+        }
+      
+        .seccion:last-child {
+          border-bottom: none;
+        }
+      
+        .seccion h2 {
+          color: #30bd43;
+          font-size: 1.2rem;
+          margin-bottom: 10px;
+        }
+      
+        .seccion p {
+          margin: 5px 0;
+          font-size: 1rem;
+          color: #333;
+        }
+      
+        /* Mensaje de Carga */
+        .loading {
+          color: #666;
+          font-size: 1.2rem;
+          text-align: center;
+        }
+      </style>
+      
+      <div class="contenedor">
+        <input type="file" id="inputImagen" accept="image/*">
+        <label for="inputImagen">Selecciona una imagen</label>
+        <img id="imagenPlanta" src="/api/placeholder/400/300" alt="Imagen de la planta o fruta">
+        <button type="button" id="botonAnalizar">Analizar Imagen</button>
+        <div id="resultadoAnalisis"></div>
+      </div>
+      
+      
+
+  <script type="importmap">
+    {
+      "imports": {
+        "@google/generative-ai": "https://esm.run/@google/generative-ai"
+      }
+    }
+  </script>
+
+  <script type="module">
+    import { GoogleGenerativeAI } from "@google/generative-ai"
+    const clave = "AIzaSyAzSRphbn7QyM-9wIcxLTwHlgjlPaPg5oc"
+
+    const genAI = new GoogleGenerativeAI(clave)
+    const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" })
+
+    const inputImagen = document.querySelector("#inputImagen")
+    const imagenPlanta = document.querySelector("#imagenPlanta")
+    const botonAnalizar = document.querySelector("#botonAnalizar")
+    const resultadoAnalisis = document.querySelector("#resultadoAnalisis")
+
+    inputImagen.addEventListener("change", (event) => {
+      const file = event.target.files[0]
+      if (file) {
+        const reader = new FileReader()
+        reader.onload = (e) => {
+          imagenPlanta.src = e.target.result
+        }
+        reader.readAsDataURL(file)
+      }
+    })
+
+    botonAnalizar.addEventListener("click", async () => {
+      if (imagenPlanta.src === "/api/placeholder/400/300") {
+        resultadoAnalisis.innerHTML = "<p class='loading'>Por favor, selecciona una imagen primero.</p>"
+        return
+      }
+
+      desactivarBoton()
+      resultadoAnalisis.innerHTML = "<p class='loading'>Analizando la imagen...</p>"
+
+      try {
+        const imageData = await getImageData(imagenPlanta)
+        const result = await model.generateContent([
+          "Analiza la imagen proporcionada y responde las siguientes preguntas:\n" +
+          "1. ¿La planta o fruta presenta alguna plaga?\n" +
+          "2. Si presenta una plaga, indica cuál es y descríbela en detalle.\n" +
+          "3. Razones comunes por las que esta plaga afecta la planta/fruta.\n" +
+          "4. Posibles soluciones para eliminar o controlar la plaga.\n" +
+          "5. Si no tiene plagas, indica que la planta/fruta está sana.\n" +
+          "Presenta la información en un formato estructurado con secciones usando HTML.",
+          imageData
+        ])
+        const response = await result.response
+        const text = response.text()
+        resultadoAnalisis.innerHTML = text
+      } catch (error) {
+        resultadoAnalisis.innerHTML = '<p class="loading">Hubo un problema al analizar la imagen: ' + error.message + '</p>'
+      }
+
+      activarBoton()
+    })
+
+    async function getImageData(img) {
+      return new Promise((resolve) => {
+        const canvas = document.createElement('canvas')
+        canvas.width = img.width
+        canvas.height = img.height
+        const ctx = canvas.getContext('2d')
+        ctx.drawImage(img, 0, 0)
+        canvas.toBlob((blob) => {
+          const reader = new FileReader()
+          reader.onloadend = () => resolve({
+            inlineData: {
+              data: reader.result.split(',')[1],
+              mimeType: 'image/jpeg'
+            }
+          })
+          reader.readAsDataURL(blob)
+        }, 'image/jpeg')
+      })
+    }
+
+    function desactivarBoton() {
+      botonAnalizar.disabled = true
+      botonAnalizar.innerText = "Analizando..."
+    }
+
+    function activarBoton() {
+      botonAnalizar.disabled = false
+      botonAnalizar.innerText = "Analizar Imagen"
+    }
+  </script>
+
+
+
+
+
+
+	<!-- footer -->
+	<div class="footer-area">
+		<div class="container">
+			<div class="row">
+				<div class="col-lg-3 col-md-6">
+					<div class="footer-box about-widget">
+						<h2 class="widget-title">Sobre Nosotros</h2>
+						<p>Nos dedicamos a ofrecer productos hortofrutícolas frescos y orgánicos de la región de Bolívar, trabajando junto a agricultores locales para llevar lo mejor de nuestra tierra hasta tu mesa.</p>
+					</div>
+				</div>
+				<div class="col-lg-3 col-md-6">
+					<div class="footer-box get-in-touch">
+						<h2 class="widget-title">Contáctanos</h2>
+						<ul>
+							<li>Calle Principal, Cartagena, Bolívar, Colombia</li>
+							<li>contacto@hortifru-bolivar.com</li>
+							<li>+57 300 123 4567</li>
+						</ul>
+					</div>
+				</div>
+				<div class="col-lg-3 col-md-6">
+					<div class="footer-box pages">
+						<h2 class="widget-title">Páginas</h2>
+						<ul>
+							<li><a href="index.html">Inicio</a></li>
+							<li><a href="about.html">Sobre Nosotros</a></li>
+							<li><a href="services.html">Tienda</a></li>
+							<li><a href="news.html">Noticias</a></li>
+							<li><a href="contact.html">Contacto</a></li>
+						</ul>
+					</div>
+				</div>
+				<div class="col-lg-3 col-md-6">
+					<div class="footer-box subscribe">
+						<h2 class="widget-title">Suscríbete</h2>
+						<p>Únete a nuestra lista de correos para recibir las últimas noticias y ofertas.</p>
+						<form action="index.html">
+							<input type="email" placeholder="Correo electrónico">
+							<button type="submit"><i class="fas fa-paper-plane"></i></button>
+						</form>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<!-- end footer -->
+
+	<!-- copyright -->
+	<div class="copyright">
+		<div class="container">
+			<div class="row">
+				<div class="col-lg-6 col-md-12">
+					<p>Copyright &copy; 2024 - Frutik Bolívar. Todos los Derechos Reservados.<br>
+						Desarrollado por - <a href="http://localhost/proyectocomercializacion/index.php">Frutik Bolívar</a>
+					</p>
+				</div>
+				<div class="col-lg-6 text-right col-md-12">
+					<div class="social-icons">
+						<ul>
+							<li><a href="#" target="_blank"><i class="fab fa-facebook-f"></i></a></li>
+							<li><a href="#" target="_blank"><i class="fab fa-twitter"></i></a></li>
+							<li><a href="#" target="_blank"><i class="fab fa-instagram"></i></a></li>
+							<li><a href="#" target="_blank"><i class="fab fa-linkedin"></i></a></li>
+						</ul>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<!-- end copyright -->
+
+	<!-- jquery -->
+	<script src="../../assets/js/jquery-1.11.3.min.js?2"></script>
+	<!-- bootstrap -->
+	<script src="../../assets/bootstrap/js/bootstrap.min.js?2"></script>
+	<!-- count down -->
+	<script src="../../assets/js/jquery.countdown.js?2"></script>
+	<!-- isotope -->
+	<script src="../../assets/js/jquery.isotope-3.0.6.min.js?2"></script>
+	<!-- waypoints -->
+	<script src="../../assets/js/waypoints.js?2"></script>
+	<!-- owl carousel -->
+	<script src="../../assets/js/owl.carousel.min.js?2"></script>
+	<!-- magnific popup -->
+	<script src="../../assets/js/jquery.magnific-popup.min.js?2"></script>
+	<!-- mean menu -->
+	<script src="../../assets/js/jquery.meanmenu.min.js?2"></script>
+	<!-- sticker js -->
+	<script src="../../assets/js/sticker.js?2"></script>
+	<!-- main js -->
+	<script src="../../assets/js/main.js?2"></script>
+
+</body>
+
+</html>

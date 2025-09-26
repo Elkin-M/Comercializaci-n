@@ -1,0 +1,432 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Chatbot Experto en Mercado Hortofrutícola</title>
+<style>
+  * {
+    margin: 0 auto;
+    -webkit-user-select: none;
+  }
+  body {
+    width: 100vw;
+    height: 100vh;
+    overflow: hidden;
+    background-color: #F6F6F6;
+  }
+  .container {
+    margin: auto;
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    top: 0;
+    right: 0;
+    height: 500px;
+    width: 500px;
+    animation: up-down 7.5s infinite ease-in-out;
+  }
+  .container #chatbot {
+    margin: auto;
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    top: 0;
+    right: 0;
+    width: 150px;
+    height: 85px;
+    border: 12px solid #3cb043;
+    border-radius: 5rem;
+  }
+  .container #chatbot-corner {
+    margin: auto;
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    top: 0;
+    right: 0;
+    top: 105px;
+    left: -65px;
+    width: 0;
+    height: 0;
+    border-left: 20px solid transparent;
+    border-right: 20px solid transparent;
+    border-top: 25px solid #3cb043;
+    transform: rotate(140deg);
+  }
+  .container #antenna {
+    margin: auto;
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    top: 0;
+    right: 0;
+    top: -125px;
+    height: 20px;
+    width: 10px;
+    background-color: #3cb043;
+    animation: antenna-appear 7.5s infinite ease-in-out;
+  }
+  .container #antenna #beam {
+    position: absolute;
+    top: -12.5px;
+    left: -5px;
+    height: 20px;
+    width: 20px;
+    border-radius: 50%;
+    background-color: #3cb043;
+    animation: beam-appear 7.5s infinite ease-in-out;
+  }
+  .container #antenna #beam-pulsar {
+    position: absolute;
+    top: -12.5px;
+    left: -5px;
+    height: 20px;
+    width: 20px;
+    border-radius: 50%;
+    background-color: #3cb043;
+    animation: beam-pulsar-appear 7.5s infinite ease-in-out;
+  }
+  .container .dot {
+    height: 17.5px;
+    width: 17.5px;
+    margin: auto;
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    top: 0;
+    right: 0;
+    left: -65px;
+    background-color: #3cb043;
+    border-radius: 50%;
+    animation: pulse-outer 7.5s infinite ease-in-out;
+  }
+  .container .dot:nth-child(2) {
+    left: 0;
+    animation: pulse-inner 7.5s infinite ease-in-out;
+    animation-delay: 0.2s;
+  }
+  .container .dot:nth-child(3) {
+    left: 65px;
+    animation: pulse-outer 7.5s infinite ease-in-out;
+    animation-delay: 0.4s;
+  }
+
+  /* Keyframes */
+  @keyframes pulse-inner {
+    0% { transform: scale(1); }
+    7.5% { transform: scale(1.5); }
+    15% { transform: scale(1); }
+    22.5% { transform: scale(1.5); }
+    30% { transform: scale(1); }
+    37.5% { transform: scale(1.5); }
+    45% { top: 0; transform: scale(1); height: 17.5px; border-radius: 50%; transform: rotate(-370deg); }
+    50% { top: 22.5px; height: 10px; border-radius: 3rem; transform: rotate(10deg); }
+    55% { transform: rotate(-10deg); }
+    60% { transform: rotate(10deg); }
+    65% { transform: rotate(0deg); }
+    85% { top: 22.5px; height: 10px; border-radius: 3rem; transform: rotate(0deg); }
+    92.5% { top: 22.5px; height: 10px; border-radius: 2.5rem; transform: rotate(0deg); }
+    100% { top: 0; height: 17.5px; border-radius: 50%; transform: rotate(-360deg); }
+  }
+
+  @keyframes pulse-outer {
+    0% { transform: scale(1); }
+    7.5% { transform: scale(1.5); }
+    15% { transform: scale(1); }
+    22.5% { transform: scale(1.5); }
+    30% { transform: scale(1); }
+    37.5% { transform: scale(1.5); }
+    45% { transform: scale(1); height: 17.5px; }
+    55% { transform: scale(1); height: 5px; }
+    60% { height: 17.5px; }
+    75% { height: 17.5px; }
+    80% { transform: scale(1); height: 5px; }
+    85% { height: 17.5px; }
+    100% { height: 17.5px; }
+  }
+
+  @keyframes antenna-appear {
+    0% { visibility: hidden; top: -100px; height: 0; }
+    50% { visibility: hidden; top: -100px; height: 0; }
+    55% { visibility: visible; top: -125px; height: 20px; }
+    95% { visibility: visible; top: -125px; height: 20px; }
+    100% { top: -100px; height: 0; }
+  }
+
+  @keyframes beam-appear {
+    0% { visibility: hidden; top: -12.5px; height: 0; }
+    50% { visibility: hidden; top: -12.5px; height: 0; }
+    55% { visibility: visible; top: -12.5px; height: 20px; width: 20px; }
+    100% { visibility: visible; top: -12.5px; height: 20px; width: 20px; }
+  }
+
+  @keyframes beam-pulsar-appear {
+    0% { visibility: hidden; top: -12.5px; height: 0; }
+    50% { visibility: hidden; top: -12.5px; height: 0; }
+    55% { visibility: visible; top: -12.5px; left: -5px; height: 20px; width: 20px; opacity: 1; }
+    65% { top: -25px; left: -15px; height: 40px; width: 40px; opacity: 0; visibility: visible; }
+    74% { visibility: hidden; opacity: 0; }
+    75% { visibility: visible; top: -12.5px; left: -5px; height: 20px; width: 20px; opacity: 1; }
+    85% { top: -25px; left: -15px; height: 40px; width: 40px; opacity: 0; visibility: visible; }
+    94% { visibility: hidden; opacity: 0; }
+    100% { visibility: hidden; opacity: 0; }
+  }
+
+  @keyframes up-down {
+    0% { transform: translate(0); }
+    12.5% { transform: translate(0, 2%); }
+    25% { transform: translate(0); }
+    37.5% { transform: translate(0, 2%); }
+    50% { transform: translate(0); }
+    62.5% { transform: translate(0, 2%); }
+    75% { transform: translate(0); }
+    87.5% { transform: translate(0, 2%); }
+    100% { transform: translate(0); }
+  }
+</style>
+</head>
+<body>
+
+  <br><br><br><br><br><br><br><br><br><br><br>
+
+<div id="loading-container">
+  <div class="container">
+    <div id="chatbot">
+      <div class="dot"></div>
+      <div class="dot"></div>
+      <div class="dot"></div>
+    </div>
+    <div id="chatbot-corner"></div>
+    <div id="antenna">
+      <div id="beam"></div>
+      <div id="beam-pulsar"></div>
+    </div>
+  </div>
+</div>
+
+<div id="page-content" style="display: none;">
+  <!-- Contenido principal de la página aquí -->
+  
+  <style>
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background-color: #e9f5e9;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
+    .contenedor {
+      max-width: 800px;
+      width: 100%;
+      margin: 20px;
+      padding: 20px;
+      background-color: #fff;
+      border-radius: 12px;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+    }
+    h1 {
+      text-align: center;
+      font-size: 2rem;
+      color: #4caf50;
+      margin-bottom: 20px;
+      font-weight: 700;
+    }
+    #chatbox {
+      max-height: 400px;
+      height: 400px;
+      overflow-y: auto;
+      border: 1px solid #ddd;
+      padding: 15px;
+      background-color: #f7fff7;
+      border-radius: 12px;
+      box-shadow: inset 0 2px 6px rgba(0, 0, 0, 0.1);
+    }
+    .mensaje {
+      margin: 10px 0;
+      padding: 10px 15px;
+      border-radius: 18px;
+      max-width: 75%;
+      line-height: 1.6;
+      font-size: 1rem;
+      animation: slideIn 0.3s ease forwards;
+    }
+    .usuario {
+      background-color: #4caf50;
+      color: #fff;
+      align-self: flex-end;
+      text-align: right;
+      margin-left: auto;
+    }
+    .chatbot {
+      background-color: #e0f2e0;
+      color: #333;
+      align-self: flex-start;
+      text-align: left;
+      margin-right: auto;
+    }
+    .mensaje p {
+      margin: 0;
+    }
+    #entradaMensaje {
+      width: calc(100% - 90px);
+      padding: 12px;
+      margin-top: 10px;
+      border-radius: 24px;
+      border: 1px solid #4caf50;
+      font-size: 1rem;
+      transition: border-color 0.3s ease;
+    }
+    #entradaMensaje:focus {
+      border-color: #388e3c;
+      outline: none;
+    }
+    #enviarMensaje {
+      padding: 12px 24px;
+      margin-left: 10px;
+      border: none;
+      border-radius: 24px;
+      background-color: #4caf50;
+      color: white;
+      cursor: pointer;
+      font-size: 1rem;
+      transition: background-color 0.3s ease, box-shadow 0.3s ease, transform 0.1s ease;
+    }
+    #enviarMensaje:hover {
+      background-color: #388e3c;
+      box-shadow: 0 3px 6px rgba(0, 0, 0, 0.1);
+    }
+    #enviarMensaje:active {
+      transform: scale(0.98);
+      background-color: #2e7d32;
+    }
+    /* Animación de entrada de mensajes */
+    @keyframes slideIn {
+      from {
+        opacity: 0;
+        transform: translateY(20px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+    /* Scroll suave */
+    #chatbox {
+      scroll-behavior: smooth;
+    }
+  </style>
+
+  <div class="contenedor">
+    <h1>Chatbot Experto en Mercado Hortofrutícola</h1>
+    <div id="chatbox">
+      <!-- Mensajes del chat se mostrarán aquí -->
+    </div>
+    <div>
+      <input type="text" id="entradaMensaje" placeholder="Escribe tu mensaje...">
+      <button id="enviarMensaje">Enviar</button>
+    </div>
+  </div>
+
+  <script type="importmap">
+    {
+      "imports": {
+        "@google/generative-ai": "https://esm.run/@google/generative-ai"
+      }
+    }
+  </script>
+
+  <script type="module">
+    import { GoogleGenerativeAI } from "@google/generative-ai";
+    const clave = "AIzaSyAzSRphbn7QyM-9wIcxLTwHlgjlPaPg5oc";
+
+    const genAI = new GoogleGenerativeAI(clave);
+    const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" }); 
+
+    const entradaMensaje = document.querySelector("#entradaMensaje");
+    const enviarMensaje = document.querySelector("#enviarMensaje");
+    const chatbox = document.querySelector("#chatbox");
+
+    entradaMensaje.addEventListener("keypress", function (event) {
+      if (event.key === "Enter") {
+        event.preventDefault();
+        enviarMensaje.click();
+      }
+    });
+
+    enviarMensaje.addEventListener("click", async () => {
+      const mensaje = entradaMensaje.value.trim();
+      if (mensaje) {
+        mostrarMensaje("usuario", mensaje);
+        entradaMensaje.value = "";
+
+        desactivarBoton();
+
+        try {
+          const result = await model.generateContent([
+            `Eres un chatbot experto en el mercado hortofrutícola de la región Caribe, especialmente en Bolívar, Colombia.
+             Además de responder a preguntas generales, debes proporcionar información detallada sobre productos, precios, zonas de cultivo y tendencias del mercado hortofrutícola de Bolívar, Colombia.
+             También compara precios en diferentes municipios de Bolívar.
+             - Si el usuario menciona una fruta que no se cultiva en el Caribe, indica claramente que no puedes proporcionar información sobre esa fruta, ya que te especializas de Bolívar, Colombia.
+             Usuario: ${mensaje}
+             Responde de forma clara y organizada, usando viñetas o secciones si es necesario, y actúa como un experto confiable y profesional en el mercado hortofrutícola del Caribe.`
+          ]);
+
+          const response = await result.response;
+          let respuestaChatbot = response.text();
+
+          // Reemplazar texto entre asteriscos por negrita
+          respuestaChatbot = respuestaChatbot.replace(/\*(.*?)\*/g, "<strong>$1</strong>");
+
+          mostrarMensaje("chatbot", respuestaChatbot);
+        } catch (error) {
+          mostrarMensaje("chatbot", "Hubo un error al procesar tu solicitud. Por favor, inténtalo de nuevo.");
+        }
+
+        activarBoton();
+      }
+    });
+
+    function mostrarMensaje(remitente, mensaje) {
+      const mensajeDiv = document.createElement("div");
+      mensajeDiv.classList.add("mensaje", remitente);
+      
+      if (remitente === "chatbot") {
+        mensajeDiv.innerHTML = mensaje;
+      } else {
+        mensajeDiv.textContent = mensaje;
+      }
+
+      chatbox.appendChild(mensajeDiv);
+      chatbox.scrollTop = chatbox.scrollHeight;
+    }
+
+    function desactivarBoton() {
+      enviarMensaje.disabled = true;
+      enviarMensaje.innerText = "Esperando...";
+    }
+
+    function activarBoton() {
+      enviarMensaje.disabled = false;
+      enviarMensaje.innerText = "Enviar";
+    }
+  </script>
+
+
+</div>
+
+<script>
+  window.addEventListener('load', function() {
+    // Mostrar la animación de carga por 3 segundos
+    setTimeout(function() {
+      document.getElementById('loading-container').style.display = 'none';
+      document.getElementById('page-content').style.display = 'block';
+    }, 6000); // Ajusta el tiempo en milisegundos (3000 ms = 3 segundos)
+  });
+</script>
+
+</body>
+</html>

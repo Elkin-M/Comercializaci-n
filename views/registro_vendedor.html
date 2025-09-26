@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Registro del Campesino</title>
+    <link rel="stylesheet" href="../css/registro.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+<style>
+    select {
+    width: 100%;
+    padding: 0.75rem 1rem;
+    border: 2px solid var(--border-color);
+    border-radius: 8px;
+    font-size: 1rem;
+    transition: all 0.3s ease;
+    background-color: rgba(255, 255, 255, 0.8);
+    appearance: none; /* Quita la flecha por defecto en algunos navegadores */
+}
+
+select:focus {
+    outline: none;
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 3px rgba(40, 167, 69, 0.2);
+}
+
+.input-group select + label {
+    position: absolute;
+    left: 1rem;
+    top: 0.75rem;
+    color: #999;
+    transition: all 0.3s ease;
+    pointer-events: none;
+}
+
+select:focus + label,
+select:not([value=""]) + label {
+    top: -0.5rem;
+    left: 0.5rem;
+    font-size: 0.75rem;
+    color: var(--primary-color);
+    background-color: white;
+    padding: 0 0.25rem;
+}
+
+.custom-select-wrapper {
+    position: relative;
+    width: 100%;
+}
+
+#municipio-search {
+    width: 100%;
+    padding: 0.75rem;
+    border: 2px solid var(--border-color);
+    border-radius: 8px;
+    font-size: 1rem;
+}
+
+.custom-select-options {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    width: 100%;
+    max-height: 200px;
+    overflow-y: auto;
+    background-color: white;
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    display: none;
+    z-index: 100;
+}
+
+.select-option {
+    padding: 0.75rem;
+    font-size: 1rem;
+    cursor: pointer;
+}
+
+.select-option:hover {
+    background-color: var(--primary-color);
+    color: white;
+}
+
+
+</style>
+</head>
+<body>
+    <div class="container">
+        <div class="form-wrapper">
+            <h2>Registro del Campesino</h2>
+            <form id="registrationForm" action="../backend/registro.php" method="POST">
+                <div class="input-group">
+                    <div class="input-icon">
+                        <i class="fas fa-user"></i>
+                    </div>
+                    <input type="text" name="nombre" id="nombre"  placeholder=" " required>
+                    <label for="nombre">Nombre</label>
+                    <div class="error-message"></div>
+                </div>
+                
+                <div class="input-group">
+                    <div class="input-icon">
+                        <i class="fas fa-user"></i>
+                    </div>
+                    <input type="text" name="apellidos" id="apellidos" required placeholder=" ">
+                    <label for="apellidos">Apellidos</label>
+                    <div class="error-message"></div>
+                </div>
+                
+                <div class="input-group">
+                    <div class="input-icon">
+                        <i class="fas fa-id-card"></i>
+                    </div>
+                    <input type="text" name="cedula" id="cedula" required placeholder=" ">
+                    <label for="cedula">Cédula de ciudadanía</label>
+                    <div class="error-message"></div>
+                </div>
+                
+                <div class="input-group">
+                    <div class="input-icon">
+                        <i class="fas fa-phone"></i>
+                    </div>
+                    <input type="tel" name="telefono" id="telefono" required placeholder=" ">
+                    <label for="telefono">Teléfono</label>
+                    <div class="error-message"></div>
+                </div>
+                
+                <div class="input-group">
+                    <div class="input-icon">
+                        <i class="fas fa-envelope"></i>
+                    </div>
+                    <input type="email" name="correo" id="correo" required placeholder=" ">
+                    <label for="correo">Correo electrónico</label>
+                    <div class="error-message"></div>
+                </div>
+                
+                <div class="input-group">
+                    <div class="input-icon">
+                        <i class="fas fa-map-marker-alt"></i>
+                    </div>
+                    <input type="text" name="direccion" id="direccion" required placeholder=" ">
+                    <label for="direccion">Dirección</label>
+                    <div class="error-message"></div>
+                </div>
+                
+                <div class="input-group">
+                    <div class="input-icon">
+                        <i class="fas fa-globe"></i>
+                    </div>
+                    <select name="departamento" id="departamento" required>
+                        <option value="Bolívar" selected>Bolívar</option>
+                    </select>
+                    <label for="departamento">Departamento</label>
+                    <div class="error-message"></div>
+                </div>
+                
+                <div class="input-group">
+                    <div class="input-icon">
+                        <i class="fas fa-city"></i>
+                    </div>
+                    <div class="custom-select-wrapper">
+                        <input type="text" id="municipio-search" placeholder="Buscar municipio..." style="width: 100%; padding: 0.75rem; border-radius: 8px; border: 2px solid var(--border-color); font-size: 1rem;">
+                        <div class="custom-select-options" id="municipio-options">
+                            <div class="select-option" data-value="Achí">Achí</div>
+                            <div class="select-option" data-value="Altos del Rosario">Altos del Rosario</div>
+                            <div class="select-option" data-value="Arenal">Arenal</div>
+                            <div class="select-option" data-value="Arjona">Arjona</div>
+                            <div class="select-option" data-value="Arroyohondo">Arroyohondo</div>
+                            <div class="select-option" data-value="Barranco de Loba">Barranco de Loba</div>
+                            <div class="select-option" data-value="Calamar">Calamar</div>
+                            <div class="select-option" data-value="Cantagallo">Cantagallo</div>
+                            <div class="select-option" data-value="Cartagena">Cartagena</div>
+                            <div class="select-option" data-value="Cicuco">Cicuco</div>
+                            <div class="select-option" data-value="Clemencia">Clemencia</div>
+                            <div class="select-option" data-value="Córdoba">Córdoba</div>
+                            <div class="select-option" data-value="El Carmen de Bolívar">El Carmen de Bolívar</div>
+                            <div class="select-option" data-value="El Guamo">El Guamo</div>
+                            <div class="select-option" data-value="El Peñón">El Peñón</div>
+                            <div class="select-option" data-value="Hatillo de Loba">Hatillo de Loba</div>
+                            <div class="select-option" data-value="Magangué">Magangué</div>
+                            <div class="select-option" data-value="Mahates">Mahates</div>
+                            <div class="select-option" data-value="Margarita">Margarita</div>
+                            <div class="select-option" data-value="María La Baja">María La Baja</div>
+                            <div class="select-option" data-value="Montecristo">Montecristo</div>
+                            <div class="select-option" data-value="Mompós">Mompós</div>
+                            <div class="select-option" data-value="Morales">Morales</div>
+                            <div class="select-option" data-value="Norosí">Norosí</div>
+                            <div class="select-option" data-value="Pinillos">Pinillos</div>
+                            <div class="select-option" data-value="Regidor">Regidor</div>
+                            <div class="select-option" data-value="Río Viejo">Río Viejo</div>
+                            <div class="select-option" data-value="San Cristóbal">San Cristóbal</div>
+                            <div class="select-option" data-value="San Estanislao">San Estanislao</div>
+                            <div class="select-option" data-value="San Fernando">San Fernando</div>
+                            <div class="select-option" data-value="San Jacinto">San Jacinto</div>
+                            <div class="select-option" data-value="San Jacinto del Cauca">San Jacinto del Cauca</div>
+                            <div class="select-option" data-value="San Juan Nepomuceno">San Juan Nepomuceno</div>
+                            <div class="select-option" data-value="San Martín de Loba">San Martín de Loba</div>
+                            <div class="select-option" data-value="San Pablo">San Pablo</div>
+                            <div class="select-option" data-value="Santa Catalina">Santa Catalina</div>
+                            <div class="select-option" data-value="Santa Rosa">Santa Rosa</div>
+                            <div class="select-option" data-value="Santa Rosa del Sur">Santa Rosa del Sur</div>
+                            <div class="select-option" data-value="Simití">Simití</div>
+                            <div class="select-option" data-value="Soplaviento">Soplaviento</div>
+                            <div class="select-option" data-value="Talaigua Nuevo">Talaigua Nuevo</div>
+                            <div class="select-option" data-value="Tiquisio">Tiquisio</div>
+                            <div class="select-option" data-value="Turbaco">Turbaco</div>
+                            <div class="select-option" data-value="Turbaná">Turbaná</div>
+                            <div class="select-option" data-value="Villanueva">Villanueva</div>
+                            <div class="select-option" data-value="Zambrano">Zambrano</div>
+                        </div>
+                        <input type="hidden" name="municipio" id="municipio">
+                    </div>
+                    <label for=""></label>
+                    <div class="error-message"></div>
+                </div>
+                
+                
+                <div class="input-group">
+                    <div class="input-icon">
+                        <i class="fas fa-user-tag"></i>
+                    </div>
+                    <input type="text" name="nombre_usuario" id="nombre_usuario" required placeholder=" ">
+                    <label for="nombre_usuario">Nombre de usuario</label>
+                    <div class="error-message"></div>
+                </div>
+                
+                <div class="input-group">
+                    <div class="input-icon">
+                        <i class="fas fa-lock"></i>
+                    </div>
+                    <input type="password" name="contraseña" id="contraseña" required placeholder=" ">
+                    <label for="contraseña">Contraseña</label>
+                    <div class="error-message"></div>
+                </div>
+                <button type="submit">Registrarse</button>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const form = document.getElementById('registrationForm');
+            const inputs = form.querySelectorAll('input');
+
+            form.addEventListener('submit', function(event) {
+                inputs.forEach(input => validateInput(input));
+                if (!form.checkValidity()) {
+                    event.preventDefault();
+                }
+            });
+        });
+    </script>
+
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+    const municipioSearch = document.getElementById('municipio-search');
+    const municipioOptions = document.getElementById('municipio-options');
+    const municipioHiddenInput = document.getElementById('municipio');
+    
+    // Mostrar opciones al hacer clic en el campo de búsqueda
+    municipioSearch.addEventListener('focus', () => {
+        municipioOptions.style.display = 'block';
+    });
+
+    // Ocultar opciones cuando se hace clic fuera
+    document.addEventListener('click', (event) => {
+        if (!municipioSearch.contains(event.target) && !municipioOptions.contains(event.target)) {
+            municipioOptions.style.display = 'none';
+        }
+    });
+
+    // Filtrar municipios en tiempo real
+    municipioSearch.addEventListener('input', function() {
+        const searchText = this.value.toLowerCase();
+        Array.from(municipioOptions.children).forEach(option => {
+            option.style.display = option.textContent.toLowerCase().includes(searchText) ? 'block' : 'none';
+        });
+    });
+
+    // Seleccionar municipio y llenar el campo oculto
+    municipioOptions.addEventListener('click', function(event) {
+        if (event.target.classList.contains('select-option')) {
+            municipioSearch.value = event.target.textContent;
+            municipioHiddenInput.value = event.target.getAttribute('data-value');
+            municipioOptions.style.display = 'none';
+        }
+    });
+});
+
+    </script>
+
+
+
+
+
+</body>
+</html>
