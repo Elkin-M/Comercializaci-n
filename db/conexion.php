@@ -16,7 +16,7 @@ if ($database_url) {
     $db_parts = parse_url($database_url);
     
     $db_host = $db_parts['host'];
-    $db_port = $db_parts['port'];
+    $db_port = isset($db_parts['port']) ? $db_parts['port'] : 5432; // Default PostgreSQL port
     $db_user = $db_parts['user'];
     $db_pass = $db_parts['pass'];
     $db_name = ltrim($db_parts['path'], '/');
