@@ -5,6 +5,27 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Chatbot Experto en Mercado Hortofrutícola</title>
+  <!-- favicon -->
+  <link rel="shortcut icon" type="image/png" href="../../assets/img/favicon.png">
+  <!-- google font -->
+  <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,400,700" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css?family=Poppins:400,700&display=swap" rel="stylesheet">
+  <!-- fontawesome -->
+  <link rel="stylesheet" href="../../assets/css/all.min.css?2">
+  <!-- bootstrap -->
+  <link rel="stylesheet" href="../../assets/bootstrap/css/bootstrap.min.css?2">
+  <!-- owl carousel -->
+  <link rel="stylesheet" href="../../assets/css/owl.carousel.css?2">
+  <!-- magnific popup -->
+  <link rel="stylesheet" href="../../assets/css/magnific-popup.css?2">
+  <!-- animate css -->
+  <link rel="stylesheet" href="../../assets/css/animate.css?2">
+  <!-- mean menu css -->
+  <link rel="stylesheet" href="../../assets/css/meanmenu.min.css?2">
+  <!-- main style -->
+  <link rel="stylesheet" href="../../assets/css/main.css?2">
+  <!-- responsive -->
+  <link rel="stylesheet" href="../../assets/css/responsive.css?2">
   <style>
     * {
       margin: 0 auto;
@@ -421,6 +442,62 @@
 
 <body>
 
+  <!--PreLoader-->
+  <div class="loader">
+    <div class="loader-inner">
+      <div class="circle"></div>
+    </div>
+  </div>
+  <!--PreLoader Ends-->
+
+  <!-- header -->
+  <div class="top-header-area" id="sticker">
+    <div class="container">
+      <div class="row">
+        <div class="col-lg-12 col-sm-12 text-center">
+          <div class="main-menu-wrap">
+            <!-- logo -->
+            <div class="site-logo">
+              <a href="../../index.php">
+                <img src="../../assets/img/company-logos/6.png" alt="">
+              </a>
+            </div>
+            <!-- logo -->
+
+            <!-- menu start -->
+            <nav class="main-menu">
+              <ul>
+                <li class="current-list-item"><a href="../../index.php">INICIO</a></li>
+                <li><a href="../../views/nosotros.html">NOSOTROS</a></li>
+                <li><a href="../../views/tienda.php">TIENDA</a></li>
+                <li><a href="../../views/campesinos.php">CAMPESINOS</a></li>
+
+                <li><a href="#">INTELIGENCIA ARTIFICIAL</a>
+                  <ul class="sub-menu">
+                    <li><a href="reconocimiento_de_frutas.html">Reconocimiento de frutas</a></li>
+                    <li><a href="chatbot.html">Chatbot Experto en Mercado Hortofrutícola</a></li>
+                    <li><a href="detector_de_plagas.html">Detector de plagas </a></li>
+                  </ul>
+                </li>
+
+                <li>
+                  <div class="header-icons">
+                    <a class="mobile-hide user-bar-icon" href="../../views/login_vendedor.php"><i
+                        class="fas fa-user"></i> INICIAR SESIÓN</a>
+                  </div>
+                </li>
+              </ul>
+            </nav>
+            <a class="mobile-show user-bar-icon" href=""><i class="fas fa-user"></i></a>
+            <div class="mobile-menu"></div>
+            <!-- menu end -->
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- end header -->
+
   <br><br><br><br><br><br><br><br><br><br><br>
 
   <div id="loading-container">
@@ -588,10 +665,10 @@
   </script>
 
     <script type="module">
-      import { GoogleGenerativeAI } from "@google/generative-ai";
-      const clave = "AIzaSyAzSRphbn7QyM-9wIcxLTwHlgjlPaPg5oc";
+      import { GoogleGenerativeAI } from "@google/generative-ai"
+      const clave = "AIzaSyAzSRphbn7QyM-9wIcxLTwHlgjlPaPg5oc"
 
-      const genAI = new GoogleGenerativeAI(clave);
+      const genAI = new GoogleGenerativeAI(clave)
       const model = genAI.getGenerativeModel({ model: "gemini-2.5-flash" });
 
       const entradaMensaje = document.querySelector("#entradaMensaje");
