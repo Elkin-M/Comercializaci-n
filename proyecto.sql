@@ -17,6 +17,7 @@ CREATE TABLE campesinos (
   contraseña VARCHAR(255) NOT NULL
 );
 
+
 INSERT INTO campesinos (id, nombre, apellidos, cedula, telefono, correo, direccion, departamento, municipio, nombre_usuario, contraseña) VALUES
 (1, 'john luis', 'buelvas rosario', '119353267', '3023893054', 'jhonbuar@hotmail.com', 'villa grande 1 mz g prima lote 9', 'bolivar', 'cartagena', 'john', '$2y$10$ZmI/gIGC3Z/Tu7YrjwnCpuKg9v5PNXGOlOtEnovFp37iChoZNwl5K'),
 (2, 'samuel ', 'perez', '1193532648', '3023536985', 'samuel@hotmail.com', 'mz j lt8', 'bolivar', 'san juan', 'samuel', '$2y$10$o9PcjTG4dSxKuu8G.vUkOuB4Ll1E8x6qIum7iCCVQi2vO6x0SCY32'),
