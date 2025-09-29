@@ -1,13 +1,19 @@
-FROM php:8.2-cli
+# Imagen base de PHP con Apache
+FROM php:8.2-apache
 
-# Establece el directorio de trabajo
-WORKDIR /app
+# Instalar dependencias necesarias para PostgreSQL
+RUN apt-get update && apt-get install -y \
+    libpq-dev \
+    && docker-php-ext-install pdo pdo_pgsql
 
-# Copia todo el código al contenedor
-COPY . /app
+# Copiar el código al contenedor
+COPY . /var/www/html/
 
-# Instala extensiones necesarias (pgsql, pdo, etc.)
-RUN docker-php-ext-install pdo pdo_pgsql
+# Exponer el puerto dinámico de Render
+EXPOSE 80
 
-# Exponer puerto dinámico
-CMD ["php", "-S", "0.0.0.0:10000", "-t", "."]
+# Ajustar DocumentRoot si usas subcarpeta (ej: public)
+# RUN sed -i 's!/var/www/html!/var/www/html/public!g' /etc/apache2/sites-available/000-default.conf
+
+# Iniciar Apache
+CMD ["apache2-foreground"]
