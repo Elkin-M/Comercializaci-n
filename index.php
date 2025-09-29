@@ -259,8 +259,8 @@ if (!$is_pdo && $conn) {
 
 			<div class="row g-4">
 				<?php
-				if ($result->num_rows > 0) {
-					while ($row = $result->fetch_assoc()) {
+				if (!empty($productos)) {
+					foreach ($productos as $row) {
 						echo "<div class='col-lg-4 col-md-6 mb-4'>";
 						echo "<div class='single-product-item card h-100 text-center'>"; // Añadido text-center para centrar el contenido
 						echo "<div class='product-image'>";
