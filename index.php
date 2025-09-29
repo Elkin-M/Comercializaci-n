@@ -312,7 +312,7 @@ if (!$is_pdo && $conn) {
 		}
 
 		.product-description {
-			height: 60px;
+			height: 119px;
 			/* Altura fija para mantener consistencia */
 			overflow: hidden;
 			/* Oculta el texto si es demasiado largo */
