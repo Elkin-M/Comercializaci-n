@@ -1,12 +1,29 @@
 <?php
-// lista_productos.php
-
 // Incluir el archivo de conexión
 include '../db/conexion.php';
 
+// --- Obtener todos los campesinos ---
+$sql = "SELECT * FROM campesinos";
+$campesinos = [];
 
-$sql2 = "SELECT * FROM campesinos;";
-$result2 = $conn->query($sql2);
+if ($is_pdo) {
+    // Conexión PDO para PostgreSQL
+    try {
+        $stmt = $pdo->query($sql);
+        $campesinos = $stmt->fetchAll(PDO::FETCH_ASSOC);
+    } catch (PDOException $e) {
+        // Manejar error si la consulta falla
+        echo "<p>Error al obtener campesinos: " . $e->getMessage() . "</p>";
+    }
+} else {
+    // Conexión mysqli para MySQL
+    $result2 = $conn->query($sql);
+    if ($result2 && $result2->num_rows > 0) {
+        while ($row2 = $result2->fetch_assoc()) {
+            $campesinos[] = $row2;
+        }
+    }
+}
 ?>
 
 
@@ -126,19 +143,19 @@ $result2 = $conn->query($sql2);
 			
 
 			<div class="row">
-				<?php if ($result2->num_rows > 0) {
-					while ($row2 = $result2->fetch_assoc()) { ?>
+				<?php if (!empty($campesinos)) {
+					foreach ($campesinos as $row2) { ?>
 						<div class="col-lg-4 col-md-6">
 							<div class="single-latest-news">
 								<div class="news-text-box">
-								<h3><a href="productos_campesino.php?id=<?php echo $row2['id']; ?>"><?php echo $row2['nombre'] . " " . $row2['apellidos']; ?></a></h3>
+								<h3><a href="productos_campesino.php?id=<?php echo $row2['id']; ?>"><?php echo htmlspecialchars($row2['nombre']) . " " . htmlspecialchars($row2['apellidos']); ?></a></h3>
 									<p class="blog-meta">
 										<span class="author"><i class="fas fa-user"></i> Campesino</span>
-										<span class="date"><i class="fas fa-map-marker-alt"></i> <?php echo $row2['municipio']; ?></span>
+										<span class="date"><i class="fas fa-map-marker-alt"></i> <?php echo htmlspecialchars($row2['municipio']); ?></span>
 									</p>
 									<p class="excerpt">
-										<b>Correo:</b> <?php echo $row2['correo']; ?> <br>
-										<b>Teléfono:</b> <?php echo $row2['telefono']; ?>
+										<b>Correo:</b> <?php echo htmlspecialchars($row2['correo']); ?> <br>
+										<b>Teléfono:</b> <?php echo htmlspecialchars($row2['telefono']); ?>
 									</p>
 									<a href="productos_campesino.php?id=<?php echo $row2['id']; ?>" class="read-more-btn">Ver productos <i class="fas fa-angle-right"></i></a>
 								</div>
@@ -146,7 +163,7 @@ $result2 = $conn->query($sql2);
 						</div>
 				<?php }
 				} else {
-					echo "<p>No hay productos disponibles en este momento.</p>";
+					echo "<p>No hay campesinos disponibles en este momento.</p>";
 				} ?>
 			</div>
 

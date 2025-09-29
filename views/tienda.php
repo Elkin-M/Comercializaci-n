@@ -1,12 +1,29 @@
 <?php
-// lista_productos.php
-
 // Incluir el archivo de conexión
 include '../db/conexion.php';
 
-// Obtener los tres productos más recientes
-$sql = "SELECT * FROM productos ORDER BY id DESC ";
-$result = $conn->query($sql);
+// --- Obtener todos los productos ---
+$sql = "SELECT * FROM productos ORDER BY id DESC";
+$productos = [];
+
+if ($is_pdo) {
+    // Conexión PDO para PostgreSQL
+    try {
+        $stmt = $pdo->query($sql);
+        $productos = $stmt->fetchAll(PDO::FETCH_ASSOC);
+    } catch (PDOException $e) {
+        // Manejar error si la consulta falla
+        echo "<p>Error al obtener productos: " . $e->getMessage() . "</p>";
+    }
+} else {
+    // Conexión mysqli para MySQL
+    $result = $conn->query($sql);
+    if ($result && $result->num_rows > 0) {
+        while ($row = $result->fetch_assoc()) {
+            $productos[] = $row;
+        }
+    }
+}
 ?>
 
 
@@ -126,16 +143,16 @@ $result = $conn->query($sql);
 
 			<div class="row g-4">
 				<?php
-				if ($result->num_rows > 0) {
-					while ($row = $result->fetch_assoc()) {
+				if (!empty($productos)) {
+					foreach ($productos as $row) {
 						echo "<div class='col-lg-4 col-md-6 mb-4'>";
 						echo "<div class='single-product-item card h-100 text-center'>"; // Añadido text-center para centrar el contenido
 						echo "<div class='product-image'>";
-						echo "<a href='detalle_producto.php?id=" . $row['id'] . "'><img src='../backend/" . $row['imagen_url'] . "' alt='" . $row['titulo'] . "' class='img-fluid card-img-top'></a>";
+						echo "<a href='detalle_producto.php?id=" . $row['id'] . "'><img src='../backend/" . $row['imagen_url'] . "' alt='" . htmlspecialchars($row['titulo']) . "' class='img-fluid card-img-top'></a>";
 						echo "</div>";
 						echo "<div class='card-body d-flex flex-column'>";
-						echo "<h3 class='card-title'>" . $row['titulo'] . "</h3>";
-						echo "<p class='product-description text-center'>" . $row['descripcion'] . "</p>"; // Centrado y con clase específica para control
+						echo "<h3 class='card-title'>" . htmlspecialchars($row['titulo']) . "</h3>";
+						echo "<p class='product-description text-center'>" . htmlspecialchars($row['descripcion']) . "</p>"; // Centrado y con clase específica para control
 						echo "<p class='product-price text-center'>$" . number_format($row['precio'], 2) . " COP/kg</p>"; // Centrado y separado
 						echo "<a href='carrito.php?id=" . $row['id'] . "' class='cart-btn mt-auto btn btn-primary'><i class='fas fa-shopping-cart'></i> Agregar al carrito</a>";
 						echo "</div>";

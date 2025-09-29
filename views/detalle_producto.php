@@ -1,34 +1,48 @@
 <?php
 // detalle_producto.php
 
-// Configuración de la base de datos
 include '../db/conexion.php';
 
-// Obtener el ID del producto desde la URL
+$producto = null;
+
 if (isset($_GET['id'])) {
-	$producto_id = $_GET['id'];
+    $producto_id = $_GET['id'];
 
-	// Obtener la información del producto y del campesino asociado
-	$sql = "SELECT p.*, c.nombre, c.apellidos, c.telefono, c.correo, c.direccion, c.departamento, c.municipio 
-    FROM productos p JOIN campesinos c ON p.campesino_id = c.id WHERE p.id = ?;";
-	$stmt = $conn->prepare($sql);
-	$stmt->bind_param("i", $producto_id);
-	$stmt->execute();
-	$result = $stmt->get_result();
+    $sql = "SELECT p.*, c.nombre, c.apellidos, c.telefono, c.correo, c.direccion, c.departamento, c.municipio 
+            FROM productos p 
+            JOIN campesinos c ON p.campesino_id = c.id 
+            WHERE p.id = ?";
 
-	if ($result->num_rows > 0) {
-		$producto = $result->fetch_assoc();
-	} else {
-		echo "Producto no encontrado.";
-		exit();
-	}
+    if ($is_pdo) {
+        // Conexión PDO para PostgreSQL
+        try {
+            $stmt = $pdo->prepare($sql);
+            $stmt->execute([$producto_id]);
+            $producto = $stmt->fetch(PDO::FETCH_ASSOC);
+        } catch (PDOException $e) {
+            echo "Error al obtener producto: " . $e->getMessage();
+            exit();
+        }
+    } else {
+        // Conexión mysqli para MySQL
+        $stmt = $conn->prepare($sql);
+        $stmt->bind_param("i", $producto_id);
+        $stmt->execute();
+        $result = $stmt->get_result();
+        if ($result->num_rows > 0) {
+            $producto = $result->fetch_assoc();
+        }
+        $stmt->close();
+    }
+
+    if (!$producto) {
+        echo "Producto no encontrado.";
+        exit();
+    }
 } else {
-	echo "ID de producto no proporcionado.";
-	exit();
+    echo "ID de producto no proporcionado.";
+    exit();
 }
-
-$stmt->close();
-$conn->close();
 ?>
 
 
