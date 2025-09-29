@@ -770,7 +770,7 @@ span.close-btn {
 }
 
 a.mobile-show {
-  display: none;
+  display: none !important;
 }
 
 .search-area .search-bar div.search-bar-tablecell {
@@ -1265,7 +1265,7 @@ ul.sub-menu li a {
 }
 
 ul.sub-menu li:hover a {
-  color: #23f22d; !important;
+  color: #23f22d !important;
 }
 
 .sidebar-section ul li a {
