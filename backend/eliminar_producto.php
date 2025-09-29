@@ -19,20 +19,40 @@ if (isset($_GET['id'])) {
 
     // Preparar la consulta de eliminación
     $sql = "DELETE FROM productos WHERE id = ? AND campesino_id = ?";
-    $stmt = $conn->prepare($sql);
-    $stmt->bind_param("ii", $producto_id, $campesino_id);
 
-    // Ejecutar la consulta
-    if ($stmt->execute()) {
-        echo "<script>
-                alert('Producto eliminado satisfactoriamente');
-                window.location.href = '../views/lista_productos.php';
-              </script>";
+    if ($is_pdo) {
+        try {
+            $stmt = $pdo->prepare($sql);
+            $stmt->execute([$producto_id, $campesino_id]);
+            echo "<script>
+                    alert('Producto eliminado satisfactoriamente');
+                    window.location.href = '../views/lista_productos.php';
+                  </script>";
+        } catch (PDOException $e) {
+            error_log("Error PDO al eliminar producto en eliminar_producto.php: " . $e->getMessage());
+            echo "<script>
+                    alert('Error al eliminar el producto');
+                    window.location.href = '../views/lista_productos.php';
+                  </script>";
+        }
     } else {
-        echo "<script>
-                alert('Error al eliminar el producto');
-                window.location.href = '../views/lista_productos.php';
-              </script>";
+        $stmt = $conn->prepare($sql);
+        $stmt->bind_param("ii", $producto_id, $campesino_id);
+
+        // Ejecutar la consulta
+        if ($stmt->execute()) {
+            echo "<script>
+                    alert('Producto eliminado satisfactoriamente');
+                    window.location.href = '../views/lista_productos.php';
+                  </script>";
+        } else {
+            error_log("Error mysqli al eliminar producto en eliminar_producto.php: " . $conn->error);
+            echo "<script>
+                    alert('Error al eliminar el producto');
+                    window.location.href = '../views/lista_productos.php';
+                  </script>";
+        }
+        $stmt->close();
     }
 } else {
     // Redirigir a la lista de productos si no se proporciona un ID de producto

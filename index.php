@@ -1,5 +1,50 @@
 <?php
-// Cerrar la conexión
+// Incluir el archivo de conexión
+include 'db/conexion.php';
+
+// --- Obtener algunos productos para la sección de productos ---
+$sql_productos = "SELECT * FROM productos ORDER BY id DESC LIMIT 3"; // Limitar a 3 productos
+$productos = [];
+
+if ($is_pdo) {
+    try {
+        $stmt_productos = $pdo->query($sql_productos);
+        $productos = $stmt_productos->fetchAll(PDO::FETCH_ASSOC);
+    } catch (PDOException $e) {
+        error_log("Error al obtener productos en index.php: " . $e->getMessage());
+        // Opcional: mostrar un mensaje al usuario
+    }
+} else {
+    $result_productos = $conn->query($sql_productos);
+    if ($result_productos && $result_productos->num_rows > 0) {
+        while ($row_producto = $result_productos->fetch_assoc()) {
+            $productos[] = $row_producto;
+        }
+    }
+}
+
+// --- Obtener algunos campesinos para la sección de campesinos ---
+$sql_campesinos = "SELECT * FROM campesinos ORDER BY id DESC LIMIT 3"; // Limitar a 3 campesinos
+$campesinos = [];
+
+if ($is_pdo) {
+    try {
+        $stmt_campesinos = $pdo->query($sql_campesinos);
+        $campesinos = $stmt_campesinos->fetchAll(PDO::FETCH_ASSOC);
+    } catch (PDOException $e) {
+        error_log("Error al obtener campesinos en index.php: " . $e->getMessage());
+        // Opcional: mostrar un mensaje al usuario
+    }
+} else {
+    $result_campesinos = $conn->query($sql_campesinos);
+    if ($result_campesinos && $result_campesinos->num_rows > 0) {
+        while ($row_campesino = $result_campesinos->fetch_assoc()) {
+            $campesinos[] = $row_campesino;
+        }
+    }
+}
+
+// Cerrar la conexión mysqli si está abierta
 if (!$is_pdo && $conn) {
     $conn->close();
 }

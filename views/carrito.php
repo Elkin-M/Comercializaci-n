@@ -4,6 +4,8 @@
 // Configuración de la base de datos
 include '../db/conexion.php';
 
+$producto = null;
+
 // Obtener el ID del producto desde la URL
 if (isset($_GET['id'])) {
 	$producto_id = $_GET['id'];
@@ -11,24 +13,40 @@ if (isset($_GET['id'])) {
 	// Obtener la información del producto y del campesino asociado
 	$sql = "SELECT p.*, c.nombre, c.apellidos, c.telefono, c.correo, c.direccion, c.departamento, c.municipio 
     FROM productos p JOIN campesinos c ON p.campesino_id = c.id WHERE p.id = ?;";
-	$stmt = $conn->prepare($sql);
-	$stmt->bind_param("i", $producto_id);
-	$stmt->execute();
-	$result = $stmt->get_result();
 
-	if ($result->num_rows > 0) {
-		$producto = $result->fetch_assoc();
-	} else {
-		echo "Producto no encontrado.";
-		exit();
-	}
+    if ($is_pdo) {
+        try {
+            $stmt = $pdo->prepare($sql);
+            $stmt->execute([$producto_id]);
+            $producto = $stmt->fetch(PDO::FETCH_ASSOC);
+        } catch (PDOException $e) {
+            error_log("Error PDO al obtener producto en carrito.php: " . $e->getMessage());
+            echo "Error al obtener producto.";
+            exit();
+        }
+    } else {
+        $stmt = $conn->prepare($sql);
+        $stmt->bind_param("i", $producto_id);
+        $stmt->execute();
+        $result = $stmt->get_result();
+
+        if ($result->num_rows > 0) {
+            $producto = $result->fetch_assoc();
+        } else {
+            echo "Producto no encontrado.";
+            exit();
+        }
+        $stmt->close();
+    }
 } else {
 	echo "ID de producto no proporcionado.";
 	exit();
 }
 
-$stmt->close();
-$conn->close();
+// Cerrar la conexión mysqli si está abierta
+if (!$is_pdo && $conn) {
+    $conn->close();
+}
 ?>
 
 

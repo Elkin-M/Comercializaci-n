@@ -1,10 +1,6 @@
 <?php
-// Conexión a la base de datos
-$conexion = new mysqli("localhost", "root", "", "proyecto");
-
-if ($conexion->connect_error) {
-    die("Error de conexión: " . $conexion->connect_error);
-}
+// Incluir el archivo de conexión
+include '../db/conexion.php';
 
 // Obtener los datos del formulario
 $nombre = $_POST['nombre'];
@@ -18,18 +14,37 @@ $municipio = $_POST['municipio'];
 $nombre_usuario = $_POST['nombre_usuario'];
 $contraseña = password_hash($_POST['contraseña'], PASSWORD_DEFAULT);
 
-// Insertar los datos en la tabla campesinos
+// Insertar los datos en la tabla campesinos usando prepared statements
 $sql = "INSERT INTO campesinos (nombre, apellidos, cedula, telefono, correo, direccion, departamento, municipio, nombre_usuario, contraseña)
-        VALUES ('$nombre', '$apellidos', '$cedula', '$telefono', '$correo', '$direccion', '$departamento', '$municipio', '$nombre_usuario', '$contraseña')";
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
-if ($conexion->query($sql) === TRUE) {
-    // Redirigir a login_vendedor.php después de un registro exitoso
-    header('Location: ../views/login_vendedor.php');
-    exit(); // Asegura que el script se detenga después de la redirección
+if ($is_pdo) {
+    try {
+        $stmt = $pdo->prepare($sql);
+        $stmt->execute([$nombre, $apellidos, $cedula, $telefono, $correo, $direccion, $departamento, $municipio, $nombre_usuario, $contraseña]);
+        header('Location: ../views/login_vendedor.php');
+        exit();
+    } catch (PDOException $e) {
+        error_log("Error PDO al registrar campesino en registro.php: " . $e->getMessage());
+        echo "Error al registrar campesino.";
+    }
 } else {
-    echo "Error: " . $sql . "<br>" . $conexion->error;
+    $stmt = $conn->prepare($sql);
+    $stmt->bind_param("ssssssssss", $nombre, $apellidos, $cedula, $telefono, $correo, $direccion, $departamento, $municipio, $nombre_usuario, $contraseña);
+
+    if ($stmt->execute()) {
+        header('Location: ../views/login_vendedor.php');
+        exit();
+    } else {
+        error_log("Error mysqli al registrar campesino en registro.php: " . $stmt->error);
+        echo "Error: " . $sql . "<br>" . $conn->error;
+    }
+    $stmt->close();
 }
 
-$conexion->close();
+// Cerrar la conexión mysqli si está abierta
+if (!$is_pdo && $conn) {
+    $conn->close();
+}
 ?>
 

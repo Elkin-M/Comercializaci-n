@@ -13,20 +13,37 @@ if (!isset($_SESSION['campesino_id'])) {
 // Incluir el archivo de conexión
 include '../db/conexion.php';
 
+$producto = null;
+
 // Verificar si se ha proporcionado el ID del producto
 if (isset($_GET['id'])) {
     $producto_id = $_GET['id'];
+    $campesino_id = $_SESSION['campesino_id'];
 
     // Obtener los datos del producto
     $sql = "SELECT * FROM productos WHERE id = ? AND campesino_id = ?";
-    $stmt = $conn->prepare($sql);
-    $stmt->bind_param("ii", $producto_id, $_SESSION['campesino_id']);
-    $stmt->execute();
-    $result = $stmt->get_result();
 
-    if ($result->num_rows > 0) {
-        $producto = $result->fetch_assoc();
+    if ($is_pdo) {
+        try {
+            $stmt = $pdo->prepare($sql);
+            $stmt->execute([$producto_id, $campesino_id]);
+            $producto = $stmt->fetch(PDO::FETCH_ASSOC);
+        } catch (PDOException $e) {
+            error_log("Error PDO al obtener producto en editar_producto.php: " . $e->getMessage());
+            // Considerar redirigir o mostrar un error amigable
+        }
     } else {
+        $stmt = $conn->prepare($sql);
+        $stmt->bind_param("ii", $producto_id, $campesino_id);
+        $stmt->execute();
+        $result = $stmt->get_result();
+        if ($result->num_rows > 0) {
+            $producto = $result->fetch_assoc();
+        }
+        $stmt->close();
+    }
+
+    if (!$producto) {
         header("Location: ../views/lista_productos.php");
         exit();
     }
@@ -42,6 +59,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $precio = $_POST['precio'];
     $cantidad = $_POST['cantidad'];
     $imagen_url = $producto['imagen_url'];
+    $campesino_id = $_SESSION['campesino_id'];
 
     // Verificar si se ha cargado una nueva imagen
     if (isset($_FILES['imagen']) && $_FILES['imagen']['error'] === UPLOAD_ERR_OK) {
@@ -58,20 +76,36 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         if (move_uploaded_file($_FILES['imagen']['tmp_name'], $archivo_subido)) {
             $imagen_url = $archivo_subido;
         } else {
-            echo "Error al subir la imagen.";
+            error_log("Error al subir la imagen en editar_producto.php.");
+            // Opcional: mostrar un mensaje al usuario
         }
     }
 
     // Actualizar el producto
-    $sql = "UPDATE productos SET titulo = ?, descripcion = ?, precio = ?, cantidad = ?, imagen_url = ? WHERE id = ? AND campesino_id = ?";
-    $stmt = $conn->prepare($sql);
-    $stmt->bind_param("ssdisii", $titulo, $descripcion, $precio, $cantidad, $imagen_url, $producto_id, $_SESSION['campesino_id']);
+    $sql_update = "UPDATE productos SET titulo = ?, descripcion = ?, precio = ?, cantidad = ?, imagen_url = ? WHERE id = ? AND campesino_id = ?";
 
-    if ($stmt->execute()) {
-        header("Location: ../views/lista_productos.php");
-        exit();
+    if ($is_pdo) {
+        try {
+            $stmt_update = $pdo->prepare($sql_update);
+            $stmt_update->execute([$titulo, $descripcion, $precio, $cantidad, $imagen_url, $producto_id, $campesino_id]);
+            header("Location: ../views/lista_productos.php");
+            exit();
+        } catch (PDOException $e) {
+            error_log("Error PDO al actualizar producto en editar_producto.php: " . $e->getMessage());
+            echo "Error al actualizar el producto.";
+        }
     } else {
-        echo "Error al actualizar el producto: " . $conn->error;
+        $stmt_update = $conn->prepare($sql_update);
+        $stmt_update->bind_param("ssdisii", $titulo, $descripcion, $precio, $cantidad, $imagen_url, $producto_id, $campesino_id);
+
+        if ($stmt_update->execute()) {
+            header("Location: ../views/lista_productos.php");
+            exit();
+        } else {
+            error_log("Error mysqli al actualizar producto en editar_producto.php: " . $conn->error);
+            echo "Error al actualizar el producto: " . $conn->error;
+        }
+        $stmt_update->close();
     }
 }
 ?>
@@ -111,3 +145,4 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     </div>
 </body>
 </html>
+

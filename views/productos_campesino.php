@@ -1,34 +1,75 @@
 <?php
 include '../db/conexion.php';
 
+$campesino = null;
+$productos = [];
+
 if (isset($_GET['id'])) {
     $campesino_id = $_GET['id'];
 
     // Obtener datos del campesino
     $sql_campesino = "SELECT nombre, apellidos, cedula, telefono, correo, direccion, departamento, municipio 
                      FROM campesinos WHERE id = ?";
-    $stmt_campesino = $conn->prepare($sql_campesino);
-    $stmt_campesino->bind_param("i", $campesino_id);
-    $stmt_campesino->execute();
-    $resultado_campesino = $stmt_campesino->get_result();
 
-    if ($resultado_campesino->num_rows === 0) {
+    if ($is_pdo) {
+        try {
+            $stmt_campesino = $pdo->prepare($sql_campesino);
+            $stmt_campesino->execute([$campesino_id]);
+            $campesino = $stmt_campesino->fetch(PDO::FETCH_ASSOC);
+        } catch (PDOException $e) {
+            error_log("Error PDO al obtener campesino en productos_campesino.php: " . $e->getMessage());
+            die("<div class='alert alert-danger'>Error al obtener datos del campesino.</div>");
+        }
+    } else {
+        $stmt_campesino = $conn->prepare($sql_campesino);
+        $stmt_campesino->bind_param("i", $campesino_id);
+        $stmt_campesino->execute();
+        $resultado_campesino = $stmt_campesino->get_result();
+
+        if ($resultado_campesino->num_rows === 0) {
+            die("<div class='alert alert-danger'>Campesino no encontrado</div>");
+        }
+
+        $campesino = $resultado_campesino->fetch_assoc();
+        $stmt_campesino->close();
+    }
+
+    if (!$campesino) {
         die("<div class='alert alert-danger'>Campesino no encontrado</div>");
     }
 
-    $campesino = $resultado_campesino->fetch_assoc();
-    $stmt_campesino->close();
-
     // Obtener productos del campesino
     $sql_productos = "SELECT * FROM productos WHERE campesino_id = ?";
-    $stmt_productos = $conn->prepare($sql_productos);
-    $stmt_productos->bind_param("i", $campesino_id);
-    $stmt_productos->execute();
-    $resultado_productos = $stmt_productos->get_result();
-    $stmt_productos->close();
+
+    if ($is_pdo) {
+        try {
+            $stmt_productos = $pdo->prepare($sql_productos);
+            $stmt_productos->execute([$campesino_id]);
+            $productos = $stmt_productos->fetchAll(PDO::FETCH_ASSOC);
+        } catch (PDOException $e) {
+            error_log("Error PDO al obtener productos en productos_campesino.php: " . $e->getMessage());
+            die("<div class='alert alert-danger'>Error al obtener productos del campesino.</div>");
+        }
+    } else {
+        $stmt_productos = $conn->prepare($sql_productos);
+        $stmt_productos->bind_param("i", $campesino_id);
+        $stmt_productos->execute();
+        $resultado_productos = $stmt_productos->get_result();
+        if ($resultado_productos->num_rows > 0) {
+            while ($row = $resultado_productos->fetch_assoc()) {
+                $productos[] = $row;
+            }
+        }
+        $stmt_productos->close();
+    }
 
 } else {
     die("<div class='alert alert-danger'>ID de campesino no proporcionado</div>");
+}
+
+// Cerrar la conexión mysqli si está abierta
+if (!$is_pdo && $conn) {
+    $conn->close();
 }
 ?>
 

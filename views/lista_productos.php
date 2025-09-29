@@ -10,12 +10,68 @@ if (!isset($_SESSION['campesino_id'])) {
 include '../db/conexion.php';
 
 $campesino_id = $_SESSION['campesino_id'];
+$productos = [];
+$pedidos = [];
 
-$sql = "SELECT * FROM productos WHERE campesino_id = ? ORDER BY id DESC";
-$stmt = $conn->prepare($sql);
-$stmt->bind_param("i", $campesino_id);
-$stmt->execute();
-$result = $stmt->get_result();
+// Fetch products
+$sql_productos = "SELECT * FROM productos WHERE campesino_id = ? ORDER BY id DESC";
+
+if ($is_pdo) {
+    try {
+        $stmt_productos = $pdo->prepare($sql_productos);
+        $stmt_productos->execute([$campesino_id]);
+        $productos = $stmt_productos->fetchAll(PDO::FETCH_ASSOC);
+    } catch (PDOException $e) {
+        error_log("Error PDO al obtener productos en lista_productos.php: " . $e->getMessage());
+    }
+} else {
+    $stmt_productos = $conn->prepare($sql_productos);
+    $stmt_productos->bind_param("i", $campesino_id);
+    $stmt_productos->execute();
+    $result_productos = $stmt_productos->get_result();
+    if ($result_productos->num_rows > 0) {
+        while ($row = $result_productos->fetch_assoc()) {
+            $productos[] = $row;
+        }
+    }
+    $stmt_productos->close();
+}
+
+// Fetch associated orders
+$sql_pedidos = "
+    SELECT pedido.id_pedido, productos.titulo, cliente.nombre_cliente, cliente.cedula, 
+           cliente.correo, cliente.direccion, cliente.telefono, cliente.departamento, cliente.municipio
+    FROM pedido
+    INNER JOIN productos ON pedido.id_producto = productos.id
+    INNER JOIN cliente ON pedido.id_cliente = cliente.id_cliente
+    WHERE productos.campesino_id = ?
+";
+
+if ($is_pdo) {
+    try {
+        $stmt_pedidos = $pdo->prepare($sql_pedidos);
+        $stmt_pedidos->execute([$campesino_id]);
+        $pedidos = $stmt_pedidos->fetchAll(PDO::FETCH_ASSOC);
+    } catch (PDOException $e) {
+        error_log("Error PDO al obtener pedidos en lista_productos.php: " . $e->getMessage());
+    }
+} else {
+    $stmt_pedidos = $conn->prepare($sql_pedidos);
+    $stmt_pedidos->bind_param("i", $campesino_id);
+    $stmt_pedidos->execute();
+    $result_pedidos = $stmt_pedidos->get_result();
+    if ($result_pedidos->num_rows > 0) {
+        while ($row = $result_pedidos->fetch_assoc()) {
+            $pedidos[] = $row;
+        }
+    }
+    $stmt_pedidos->close();
+}
+
+// Cerrar la conexión mysqli si está abierta
+if (!$is_pdo && $conn) {
+    $conn->close();
+}
 ?>
 
 <!DOCTYPE html>
@@ -236,19 +292,19 @@ $result = $stmt->get_result();
                 </thead>
                 <tbody>
                 <?php
-                if ($result->num_rows > 0) {
-                    while ($row = $result->fetch_assoc()) {
+                if (!empty($productos)) {
+                    foreach ($productos as $row) {
                         echo "<tr>";
-                        echo "<td><img src='../backend/" . $row['imagen_url'] . "' alt='" . htmlspecialchars($row['titulo']) . "' class='producto-imagen'></td>";
+                        echo "<td><img src='../backend/" . htmlspecialchars($row['imagen_url']) . "' alt='" . htmlspecialchars($row['titulo']) . "' class='producto-imagen'></td>";
                         echo "<td>" . htmlspecialchars($row['titulo']) . "</td>";
                         echo "<td>" . htmlspecialchars($row['descripcion']) . "</td>";
                         echo "<td class='precio'>$" . number_format($row['precio'], 2) . " COP/kg</td>";
                         echo "<td><span class='cantidad'>" . htmlspecialchars($row['cantidad']) . " kg</span></td>";
                         echo "<td class='acciones'>
-                                <a href='../backend/editar_producto.php?id=" . $row['id'] . "' class='btn-editar'>
+                                <a href='../backend/editar_producto.php?id=" . htmlspecialchars($row['id']) . "' class='btn-editar'>
                                     <i class='fas fa-edit'></i> Editar
                                 </a>
-                                <a href='../backend/eliminar_producto.php?id=" . $row['id'] . "' class='btn-eliminar'>
+                                <a href='../backend/eliminar_producto.php?id=" . htmlspecialchars($row['id']) . "' class='btn-eliminar'>
                                     <i class='fas fa-trash'></i> Eliminar
                                 </a>
                               </td>";
@@ -269,20 +325,7 @@ $result = $stmt->get_result();
             
             <div class="table-responsive">
                 <?php
-                $sql_pedidos = "
-                    SELECT pedido.id_pedido, productos.titulo, cliente.nombre_cliente, cliente.cedula, 
-                           cliente.correo, cliente.direccion, cliente.telefono, cliente.departamento, cliente.municipio
-                    FROM pedido
-                    INNER JOIN productos ON pedido.id_producto = productos.id
-                    INNER JOIN cliente ON pedido.id_cliente = cliente.id_cliente
-                    WHERE productos.campesino_id = ?
-                ";
-                $stmt_pedidos = $conn->prepare($sql_pedidos);
-                $stmt_pedidos->bind_param("i", $campesino_id);
-                $stmt_pedidos->execute();
-                $result_pedidos = $stmt_pedidos->get_result();
-
-                if ($result_pedidos->num_rows > 0) {
+                if (!empty($pedidos)) {
                     echo "<table class='table pedidos-tabla'>
                             <thead>
                                 <tr>
@@ -295,7 +338,7 @@ $result = $stmt->get_result();
                                 </tr>
                             </thead>
                             <tbody>";
-                    while ($pedido = $result_pedidos->fetch_assoc()) {
+                    foreach ($pedidos as $pedido) {
                         echo "<tr>
                                 <td>#" . htmlspecialchars($pedido['id_pedido']) . "</td>
                                 <td>" . htmlspecialchars($pedido['titulo']) . "</td>
@@ -324,9 +367,4 @@ $result = $stmt->get_result();
 </body>
 </html>
 
-<?php
-$stmt->close();
-$stmt_pedidos->close();
-$conn->close();
-?>
 

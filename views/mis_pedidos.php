@@ -13,6 +13,7 @@ if (!isset($_SESSION['campesino_id'])) {
 include '../db/conexion.php';
 
 $campesino_id = $_SESSION['campesino_id'];
+$pedidos = [];
 
 // Consulta para obtener los pedidos asociados al campesino
 $sql = "
@@ -24,10 +25,33 @@ $sql = "
     INNER JOIN cliente ON pedido.id_cliente = cliente.id_cliente
     WHERE productos.campesino_id = ?
 ";
-$stmt = $conn->prepare($sql);
-$stmt->bind_param("i", $campesino_id);
-$stmt->execute();
-$result = $stmt->get_result();
+
+if ($is_pdo) {
+    try {
+        $stmt = $pdo->prepare($sql);
+        $stmt->execute([$campesino_id]);
+        $pedidos = $stmt->fetchAll(PDO::FETCH_ASSOC);
+    } catch (PDOException $e) {
+        error_log("Error PDO al obtener pedidos en mis_pedidos.php: " . $e->getMessage());
+        // Opcional: mostrar un error amigable al usuario
+    }
+} else {
+    $stmt = $conn->prepare($sql);
+    $stmt->bind_param("i", $campesino_id);
+    $stmt->execute();
+    $result = $stmt->get_result();
+    if ($result->num_rows > 0) {
+        while ($row = $result->fetch_assoc()) {
+            $pedidos[] = $row;
+        }
+    }
+    $stmt->close();
+}
+
+// Cerrar la conexión mysqli si está abierta
+if (!$is_pdo && $conn) {
+    $conn->close();
+}
 ?>
 
 <!DOCTYPE html>
@@ -239,9 +263,9 @@ $result = $stmt->get_result();
             <h1><i class="fas fa-shopping-cart"></i> Mis Pedidos</h1>
         </div>
 
-        <?php if ($result->num_rows > 0): ?>
+        <?php if (!empty($pedidos)): ?>
             <div class="pedidos-cards">
-                <?php while ($pedido = $result->fetch_assoc()): ?>
+                <?php foreach ($pedidos as $pedido): ?>
                     <div class="pedido-card">
                         <div class="pedido-header">
                             <span class="pedido-id">#<?php echo htmlspecialchars($pedido['id_pedido']); ?></span>
@@ -283,7 +307,7 @@ $result = $stmt->get_result();
                             </div>
                         </div>
                     </div>
-                <?php endwhile; ?>
+                <?php endforeach; ?>
             </div>
         <?php else: ?>
             <div class="sin-pedidos">
@@ -298,7 +322,3 @@ $result = $stmt->get_result();
 </body>
 </html>
 
-<?php
-$stmt->close();
-$conn->close();
-?>

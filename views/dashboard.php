@@ -13,26 +13,48 @@ if (!isset($_SESSION['campesino_id'])) {
 include '../db/conexion.php';
 
 $campesino_id = $_SESSION['campesino_id'];
+$nombre_campesino = "";
+$num_pedidos = 0;
 
-// Consulta para obtener el nombre del campesino
-$sql = "SELECT nombre FROM campesinos WHERE id = ?";
-$stmt = $conn->prepare($sql);
-$stmt->bind_param("i", $campesino_id);
-$stmt->execute();
-$stmt->bind_result($nombre_campesino);
-$stmt->fetch();
-$stmt->close();
+if ($is_pdo) {
+    try {
+        // Consulta para obtener el nombre del campesino
+        $sql = "SELECT nombre FROM campesinos WHERE id = ?";
+        $stmt = $pdo->prepare($sql);
+        $stmt->execute([$campesino_id]);
+        $nombre_campesino = $stmt->fetchColumn();
 
-// Consulta para verificar si el campesino tiene pedidos
-$sql_pedidos = "SELECT COUNT(*) FROM pedido INNER JOIN productos ON pedido.id_producto = productos.id WHERE productos.campesino_id = ?";
-$stmt_pedidos = $conn->prepare($sql_pedidos);
-$stmt_pedidos->bind_param("i", $campesino_id);
-$stmt_pedidos->execute();
-$stmt_pedidos->bind_result($num_pedidos);
-$stmt_pedidos->fetch();
-$stmt_pedidos->close();
+        // Consulta para verificar si el campesino tiene pedidos
+        $sql_pedidos = "SELECT COUNT(*) FROM pedido INNER JOIN productos ON pedido.id_producto = productos.id WHERE productos.campesino_id = ?";
+        $stmt_pedidos = $pdo->prepare($sql_pedidos);
+        $stmt_pedidos->execute([$campesino_id]);
+        $num_pedidos = $stmt_pedidos->fetchColumn();
 
-$conn->close();
+    } catch (PDOException $e) {
+        error_log("Error PDO en dashboard.php: " . $e->getMessage());
+        // Opcional: mostrar un error amigable al usuario
+    }
+} else {
+    // Consulta para obtener el nombre del campesino
+    $sql = "SELECT nombre FROM campesinos WHERE id = ?";
+    $stmt = $conn->prepare($sql);
+    $stmt->bind_param("i", $campesino_id);
+    $stmt->execute();
+    $stmt->bind_result($nombre_campesino);
+    $stmt->fetch();
+    $stmt->close();
+
+    // Consulta para verificar si el campesino tiene pedidos
+    $sql_pedidos = "SELECT COUNT(*) FROM pedido INNER JOIN productos ON pedido.id_producto = productos.id WHERE productos.campesino_id = ?";
+    $stmt_pedidos = $conn->prepare($sql_pedidos);
+    $stmt_pedidos->bind_param("i", $campesino_id);
+    $stmt_pedidos->execute();
+    $stmt_pedidos->bind_result($num_pedidos);
+    $stmt_pedidos->fetch();
+    $stmt_pedidos->close();
+
+    $conn->close();
+}
 ?>
 
 <!DOCTYPE html>
