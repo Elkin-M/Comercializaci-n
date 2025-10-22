@@ -1,7 +1,7 @@
 # Imagen base de PHP con Apache
 FROM php:8.2-apache
 
-# 1. Instalar dependencias necesarias para TODAS las bases de datos (PostgreSQL y MySQL/MariaDB)
+# Instalar dependencias necesarias
 RUN apt-get update && apt-get install -y \
     libpq-dev \
     libmariadb-dev-compat \
@@ -9,13 +9,14 @@ RUN apt-get update && apt-get install -y \
     --no-install-recommends \
     && rm -rf /var/lib/apt/lists/*
 
-# 2. Habilitar las extensiones de bases de datos
-#    Añadir 'pgsql' (necesario para pg_connect()), además de las que ya tenías.
-#    Instalamos: PDO, PDO Postgres, **Postgres nativo (pgsql)**, MySQLi, PDO MySQL
-RUN docker-php-ext-install pdo pdo_pgsql pgsql mysqli pdo_mysql
+# Habilitar las extensiones PDO para ambas bases de datos
+# Quitamos mysqli y pgsql nativo; dejamos PDO para ambos
+RUN docker-php-ext-install pdo pdo_pgsql pdo_mysql 
 
 # Copiar el código al contenedor
 COPY . /var/www/html/
+
+# ... el resto del archivo se mantiene igual.
 
 # Exponer el puerto dinámico de Render
 EXPOSE 80
