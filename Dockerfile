@@ -1,17 +1,18 @@
 # Imagen base de PHP con Apache
 FROM php:8.2-apache
 
-# 1. Instalar dependencias necesarias para PostgreSQL (si aún las necesitas)
-#    y AÑADIR dependencias de MySQL (libmariadb-dev o libmysqlclient-dev)
+# 1. Instalar dependencias necesarias para TODAS las bases de datos (PostgreSQL y MySQL/MariaDB)
 RUN apt-get update && apt-get install -y \
     libpq-dev \
     libmariadb-dev-compat \
     libmariadb-dev \
+    --no-install-recommends \
     && rm -rf /var/lib/apt/lists/*
 
 # 2. Habilitar las extensiones de bases de datos
-#    Añadir mysqli y pdo_mysql, mantener pdo y pdo_pgsql si son necesarios
-RUN docker-php-ext-install pdo pdo_pgsql mysqli pdo_mysql
+#    Añadir 'pgsql' (necesario para pg_connect()), además de las que ya tenías.
+#    Instalamos: PDO, PDO Postgres, **Postgres nativo (pgsql)**, MySQLi, PDO MySQL
+RUN docker-php-ext-install pdo pdo_pgsql pgsql mysqli pdo_mysql
 
 # Copiar el código al contenedor
 COPY . /var/www/html/
